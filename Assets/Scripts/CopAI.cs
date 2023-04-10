@@ -12,18 +12,21 @@ public class CopAI : MonoBehaviour
     public Transform[] waypoints; // get a list of waypoints for the agent to move to
     private int _waypointIndex; // a reference to the currently selected waypoint
     private Vector3 _target; // the current waypoint target (for checking distance)
-    private float _minimumDistance = 1; // how close the AI should get to a waypoint before selecting a new waypoint
+    private readonly float _minimumDistance = 2; // how close the AI should get to a waypoint before selecting a new waypoint
     
     void Start()
     {
         _agent = GetComponent<NavMeshAgent>();
         // set the waypoint and target values so the AI moves when the scene starts
-        SetNextWaypoint();
+        _waypointIndex = 1;
         UpdateTargetDestination();
     }
     
     private void Update()
     {
+        Debug.Log("cop pos: " + transform.position);
+        Debug.Log("target pos: " + _target);
+        //Debug.Log(Vector3.Distance(transform.position, _target) < _minimumDistance);
         // if the agent is closer than the minimum distance to a waypoint, select a new waypoint and update the target
         if (Vector3.Distance(transform.position, _target) < _minimumDistance)
         {
