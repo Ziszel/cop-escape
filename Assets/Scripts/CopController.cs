@@ -14,8 +14,7 @@ public class CopController : MonoBehaviour
     [SerializeField] private float closeDistanceRange; // The range at which the 
     [SerializeField] private float rayRange;
     [SerializeField] private float fieldOfViewAngle;
-    [SerializeField] private float movementSpeed;
-    
+
     private CopState _currentState;
     private GameObject _playerObj;
     private PlayerController _player;
