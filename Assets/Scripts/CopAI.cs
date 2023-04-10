@@ -12,6 +12,7 @@ public class CopAI : MonoBehaviour
     public Transform[] waypoints; // get a list of waypoints for the agent to move to
     private int _waypointIndex; // a reference to the currently selected waypoint
     private Vector3 _target; // the current waypoint target (for checking distance)
+    private int _previousWaypoint;
     private readonly float _minimumDistance = 2; // how close the AI should get to a waypoint before selecting a new waypoint
     
     void Start()
@@ -24,9 +25,6 @@ public class CopAI : MonoBehaviour
     
     private void Update()
     {
-        Debug.Log("cop pos: " + transform.position);
-        Debug.Log("target pos: " + _target);
-        //Debug.Log(Vector3.Distance(transform.position, _target) < _minimumDistance);
         // if the agent is closer than the minimum distance to a waypoint, select a new waypoint and update the target
         if (Vector3.Distance(transform.position, _target) < _minimumDistance)
         {
@@ -46,10 +44,12 @@ public class CopAI : MonoBehaviour
     private void SetNextWaypoint()
     {
         int oldWaypointIndex = _waypointIndex;
-        // select a random point for the agent to move to
-        while (oldWaypointIndex == _waypointIndex)
+        // select a random point for the agent to move to, never go back and forth between points
+        while (_waypointIndex == _previousWaypoint)
         {
             _waypointIndex = Random.Range(0, waypoints.Length);   
         }
+
+        _previousWaypoint = oldWaypointIndex;
     }
 }
