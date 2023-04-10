@@ -8,25 +8,27 @@ using UnityEngine.AI; // allows access to navmesh agent
 // https://www.youtube.com/watch?v=c8Nq19gkNfs
 public class CopAI : MonoBehaviour
 {
+    [SerializeField]private float minimumDistance; // how close the AI should get to a waypoint before selecting a new waypoint
+    
     private NavMeshAgent _agent; // get a reference to the agent connected to this gameobject
     public Transform[] waypoints; // get a list of waypoints for the agent to move to
     private int _waypointIndex; // a reference to the currently selected waypoint
     private Vector3 _target; // the current waypoint target (for checking distance)
     private int _previousWaypoint;
-    private readonly float _minimumDistance = 2; // how close the AI should get to a waypoint before selecting a new waypoint
-    
+
     void Start()
     {
         _agent = GetComponent<NavMeshAgent>();
         // set the waypoint and target values so the AI moves when the scene starts
-        _waypointIndex = 1;
+        //_waypointIndex = 1;
+        SetNextWaypoint();
         UpdateTargetDestination();
     }
     
     private void Update()
     {
         // if the agent is closer than the minimum distance to a waypoint, select a new waypoint and update the target
-        if (Vector3.Distance(transform.position, _target) < _minimumDistance)
+        if (Vector3.Distance(transform.position, _target) < minimumDistance)
         {
             SetNextWaypoint();
             UpdateTargetDestination();

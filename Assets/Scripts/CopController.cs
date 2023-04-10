@@ -47,14 +47,14 @@ public class CopController : MonoBehaviour
         // If the angle is less than 90, the player is in direct view of the cop
         if((Vector3.Angle(rayDirection, transform.forward)) < fieldOfViewAngle && 
            (Vector3.Distance(transform.position, _player.transform.position) <= closeDistanceRange)){
-            Debug.Log("Player in direct view!");
+            //Debug.Log("Player in direct view!");
             return true;
         }
 
         // Detect if player is within the field of view
         if((Vector3.Angle(rayDirection, transform.forward)) < fieldOfViewAngle / 2)
         { 
-            Debug.Log("within field of view.");
+            //Debug.Log("within field of view.");
             RaycastHit hit;
                 
             // Send out a raycast to detect if the player is in direct line of sight
@@ -63,10 +63,10 @@ public class CopController : MonoBehaviour
  
                 // use the Player tag to determine if the player has been seen
                 if (hit.collider.gameObject.transform.CompareTag("Player")) {
-                    Debug.Log("Can see player.");
+                    //Debug.Log("Can see player.");
                     return true;
                 }
-                Debug.Log("Can not see player.");
+                //Debug.Log("Can not see player.");
                 return false;
             }
         }
