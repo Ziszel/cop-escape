@@ -41,7 +41,7 @@ public class CopController : MonoBehaviour
     // https://forum.unity.com/threads/raycasting-a-cone-instead-of-single-ray.39426/
     private bool ScanForPlayer()
     {
-        var rayDirection = _player.transform.position - transform.position;
+        Vector3 rayDirection = _player.transform.position - transform.position;
  
         // If the player is close and directly in-front of the cop, return True
         // Vector3.Angle calculates the angle between 'from' and 'to'.
