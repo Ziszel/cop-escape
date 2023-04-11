@@ -1,21 +1,11 @@
 using UnityEngine;
 
-// https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/internal
-// internal means this code is only accessible within the same assembly, in this case the CopController class
-internal enum CopState
-{
-    Patrolling = 0, // Standard patrol cycle (could be influenced by recent reports from other cops)
-    Investigating = 1, // Has seen something of interest and moving towards it before radioing for backup
-    Assisting = 2 // Moving to a new patrol location closest to a report from another cop
-}
-
 public class CopController : MonoBehaviour
 {
     [SerializeField] private float closeDistanceRange; // The range at which the 
     [SerializeField] private float rayRange;
     [SerializeField] private float fieldOfViewAngle;
-
-    private CopState _currentState;
+    
     private GameObject _playerObj;
     private PlayerController _player;
 
@@ -24,16 +14,12 @@ public class CopController : MonoBehaviour
         // https://docs.unity3d.com/ScriptReference/GameObject.GetComponent.html
         // find the game object since the PlayerController script is on another game object
         _playerObj = GameObject.Find("Player"); // only one player so this is safe
-        _currentState = CopState.Patrolling; // cops ALWAYS start in patrol mode
         _player = _playerObj.GetComponent<PlayerController>();
     }
 
     private void Update()
     {
-        if (_currentState == CopState.Patrolling)
-        {
-            ScanForPlayer();
-        }
+        ScanForPlayer();
     }
 
     // https://answers.unity.com/questions/15735/field-of-view-using-raycasting.html

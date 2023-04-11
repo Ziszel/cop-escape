@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Lever : MonoBehaviour
@@ -15,6 +16,9 @@ public class Lever : MonoBehaviour
     private Transform _playerPosition; // there is only ever one player so GetComponent is better for this variable
     private Transform _handle;
     private bool _handlePressed;
+    private CopAI _nearestCop;
+    private LevelManager _lm;
+    
 
     private void Start()
     {
@@ -23,6 +27,7 @@ public class Lever : MonoBehaviour
         // https://docs.unity3d.com/ScriptReference/Transform.Find.html
         _handle = transform.Find("Handle"); // Find child by name | FindChild() deprecated
         _handlePressed = false;
+        _lm = GameObject.Find("LevelManager").GetComponent<LevelManager>();
     }
     
     private void Update()
@@ -31,6 +36,7 @@ public class Lever : MonoBehaviour
         {
             StartCoroutine(RotateLever(rotationDuration));
             StartCoroutine(MoveGate(rotationDuration));
+            AlertNearestCop();
         }
     }
 
@@ -57,10 +63,11 @@ public class Lever : MonoBehaviour
 
     private IEnumerator MoveGate(float duration)
     {
+        Vector3 currentPosition = gatePosition.transform.position;
 
-        Vector3 targetPosition = new Vector3(gatePosition.transform.position.x,
-            gatePosition.transform.position.y - 5,
-            gatePosition.transform.position.z);
+        Vector3 targetPosition = new Vector3(currentPosition.x,
+            currentPosition.y - 5,
+            currentPosition.z);
 
         float time = 0.0f;
         while (time <= 1.0f)
@@ -69,5 +76,14 @@ public class Lever : MonoBehaviour
             time += (time + Time.deltaTime) / duration;
             yield return null;
         }
+    }
+
+    private void AlertNearestCop()
+    {
+        // Call _nearestCop setState to investigating and pass in the transform of this lever which the cop will use
+        // to update it's target, gatePosition required to allow cops to communicate with other cops as each lever
+        // is connected to a gate anyway, this makes sense here
+        _nearestCop = _lm.GetNearestCop(transform);
+        _nearestCop.SetState(CopState.Investigating, transform, gatePosition);
     }
 }

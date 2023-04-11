@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -9,14 +8,16 @@ enum GameState
     PlayerWon
 }
 
-public class GameManager : MonoBehaviour
+public class LevelManager : MonoBehaviour
 {
 
     private GameState _gmState;
+    private GameObject[] _cops;
 
     private void Start()
     {
         _gmState = GameState.MainLoop;
+        _cops = GameObject.FindGameObjectsWithTag("Cop");
     }
 
     private void Update()
@@ -65,5 +66,33 @@ public class GameManager : MonoBehaviour
     private void ShowWinUI()
     {
         // implement later
+    }
+
+    public CopAI GetNearestCop(Transform localTransform)
+    {
+        // Find the nearest cop, assign this to _nearestCop
+        // https://docs.unity3d.com/ScriptReference/GameObject.FindGameObjectsWithTag.html
+        GameObject closest = null;
+        float distance = Mathf.Infinity;
+        Vector3 pos = localTransform.position;
+        foreach (GameObject cop in _cops)
+        {
+            Vector3 difference = cop.transform.position - pos;
+            float curDistance = difference.sqrMagnitude;
+            if (curDistance < distance)
+            {
+                closest = cop;
+                distance = curDistance;
+            }
+        }
+        return closest.GetComponent<CopAI>();
+    }
+
+    public Transform[] GetClosestWayPoints(int depth, Transform startPos)
+    {
+        // From a point, return all the nearest wayPoints by Vector3 Distance up to a certain depth
+        // Assign them to a new Transform[] array and return it
+        
+        return null;
     }
 }

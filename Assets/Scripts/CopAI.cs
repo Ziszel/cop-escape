@@ -6,6 +6,16 @@ using UnityEngine.AI; // allows access to navmesh agent
 // https://docs.unity3d.com/2019.4/Documentation/Manual/nav-CreateNavMeshAgent.html
 // https://docs.unity3d.com/Packages/com.unity.ai.navigation@1.1/manual/NavAgentPatrol.html
 // https://www.youtube.com/watch?v=c8Nq19gkNfs
+
+// https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/keywords/internal
+// internal means this code is only accessible within the same assembly, in this case the CopController class
+public enum CopState
+{
+    Patrolling = 0, // Standard patrol cycle (could be influenced by recent reports from other cops)
+    Investigating = 1, // Has seen something of interest and moving towards it before radioing for backup
+    Assisting = 2 // Moving to a new patrol location closest to a report from another cop
+}
+
 public class CopAI : MonoBehaviour
 {
     [SerializeField]private float minimumDistance; // how close the AI should get to a waypoint before selecting a new waypoint
@@ -15,28 +25,45 @@ public class CopAI : MonoBehaviour
     private int _waypointIndex; // a reference to the currently selected waypoint
     private Vector3 _target; // the current waypoint target (for checking distance)
     private int _previousWaypoint;
+    private CopState _currentState;
+    private Transform _gatePosition;
+    private LevelManager _lm;
 
     void Start()
     {
+        _lm = GameObject.Find("LevelManager").GetComponent<LevelManager>();
         _agent = GetComponent<NavMeshAgent>();
+        _currentState = CopState.Patrolling; // cops ALWAYS start in patrol mode
         // set the waypoint and target values so the AI moves when the scene starts
         //_waypointIndex = 1;
         SetNextWaypoint();
-        UpdateTargetDestination();
+        UpdateTargetDestinationToWaypoint();
     }
     
     private void Update()
     {
-        // if the agent is closer than the minimum distance to a waypoint, select a new waypoint and update the target
-        if (Vector3.Distance(transform.position, _target) < minimumDistance)
+        if (_currentState == CopState.Patrolling)
         {
-            SetNextWaypoint();
-            UpdateTargetDestination();
+            // if the agent is closer than the minimum distance to a waypoint, select a new waypoint and update the target
+            if (Vector3.Distance(transform.position, _target) < minimumDistance)
+            {
+                SetNextWaypoint();
+                UpdateTargetDestinationToWaypoint();
+            }   
+        }
+        else if (_currentState == CopState.Investigating)
+        {
+            if (Vector3.Distance(transform.position, _target) < minimumDistance + 5)
+            {
+                AlertFriendlyCop(); // alert nearest cop to the gate to investigate that area
+                _currentState = CopState.Patrolling; // return to patrolling as usual
+                UpdateTargetDestinationToWaypoint(); // Make sure a new target is set to allow for patrol
+            }
         }
     }
 
     // set _target == to the current waypoint's position
-    private void UpdateTargetDestination()
+    private void UpdateTargetDestinationToWaypoint()
     {
         _target = waypoints[_waypointIndex].position;
         _agent.SetDestination(_target);
@@ -53,5 +80,33 @@ public class CopAI : MonoBehaviour
         }
 
         _previousWaypoint = oldWaypointIndex;
+    }
+    
+    private void AlertFriendlyCop()
+    {
+        // Get nearest cop
+        CopAI nearestCop = _lm.GetNearestCop(_gatePosition);
+        // Update that cop's waypoints to be the x nearest waypoints to the gate position
+        // the gate position is only set on the cop that visited the lever, meaning the gate position must be relayed
+        // to the cop that will visit the gate FROM the cop that visited the lever
+        nearestCop.UpdateWaypoints(_gatePosition);
+        Debug.Log("Cop alerted");
+    }
+
+    public void SetState(CopState cs, Transform dest, Transform gatePos)
+    {
+        if (cs == CopState.Investigating)
+        {
+            Vector3 pos = dest.position; // get the position of the transform for the cop to investigate
+            _currentState = cs;
+            _target = pos;
+            _gatePosition = gatePos;
+            _agent.SetDestination(pos);
+        }
+    }
+
+    public void UpdateWaypoints(Transform gatePos)
+    {
+        waypoints = _lm.GetClosestWayPoints(5, gatePos);
     }
 }
