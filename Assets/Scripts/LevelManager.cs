@@ -99,6 +99,7 @@ public class LevelManager : MonoBehaviour
         
         // Use a sorted dictionary to sort by the distance from the point (float), but store the transform along with
         // the value for retrieval after the foreach loop
+        // https://learn.microsoft.com/en-us/dotnet/api/system.collections.generic.sorteddictionary-2.enumerator?view=net-8.0
         SortedDictionary<float, Transform> distances = new SortedDictionary<float, Transform>();
         
         Vector3 pos = startPos.position;
@@ -112,6 +113,7 @@ public class LevelManager : MonoBehaviour
         // Until max depth is reached, add the waypoint to the returnWaypoints list
         for (int i = 0; i < depth; ++i)
         {
+            // https://code-maze.com/csharp-get-item-by-index-from-dictionary/
             returnWaypoints.Add(distances.ElementAt(i).Value);
         }
         
