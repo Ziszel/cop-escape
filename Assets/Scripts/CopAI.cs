@@ -105,8 +105,8 @@ public class CopAI : MonoBehaviour
         }
     }
 
-    public void UpdateWaypoints(Transform gatePos)
+    private void UpdateWaypoints(Transform gatePos)
     {
-        waypoints = _lm.GetClosestWayPoints(5, gatePos);
+        waypoints = _lm.GetClosestWayPoints(5, gatePos); // updates the cops waypoints
     }
 }

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -13,11 +15,13 @@ public class LevelManager : MonoBehaviour
 
     private GameState _gmState;
     private GameObject[] _cops;
+    private GameObject[] _waypoints;
 
     private void Start()
     {
         _gmState = GameState.MainLoop;
         _cops = GameObject.FindGameObjectsWithTag("Cop");
+        _waypoints = GameObject.FindGameObjectsWithTag("Waypoint");
     }
 
     private void Update()
@@ -91,8 +95,26 @@ public class LevelManager : MonoBehaviour
     public Transform[] GetClosestWayPoints(int depth, Transform startPos)
     {
         // From a point, return all the nearest wayPoints by Vector3 Distance up to a certain depth
-        // Assign them to a new Transform[] array and return it
+        List<Transform> returnWaypoints = new List<Transform>();
         
-        return null;
+        // Use a sorted dictionary to sort by the distance from the point (float), but store the transform along with
+        // the value for retrieval after the foreach loop
+        SortedDictionary<float, Transform> distances = new SortedDictionary<float, Transform>();
+        
+        Vector3 pos = startPos.position;
+        foreach (GameObject waypoint in _waypoints)
+        {
+            Vector3 difference = waypoint.transform.position - pos;
+            float curDistance = difference.sqrMagnitude;
+            distances.Add(curDistance, waypoint.transform);
+        }
+
+        // Until max depth is reached, add the waypoint to the returnWaypoints list
+        for (int i = 0; i < depth; ++i)
+        {
+            returnWaypoints.Add(distances.ElementAt(i).Value);
+        }
+        
+        return returnWaypoints.ToArray(); // return the list as an array 
     }
 }
