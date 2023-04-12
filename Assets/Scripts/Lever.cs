@@ -28,7 +28,6 @@ public class Lever : MonoBehaviour
         _handle = transform.Find("Handle"); // Find child by name | FindChild() deprecated
         _handlePressed = false;
         _lm = GameObject.Find("LevelManager").GetComponent<LevelManager>();
-        Debug.Log(_lm);
     }
     
     private void Update()

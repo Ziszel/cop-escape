@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -5,7 +6,6 @@ public class PlayerController : MonoBehaviour
     [Header("Move parameters")]
     [SerializeField] private float speed;
     
-    private bool _isDucking;
     private bool _isHidden; // will track if player is in shadows
     private Rigidbody _rb;
     private Transform _tr;
@@ -14,16 +14,9 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         _rb = GetComponent<Rigidbody>(); // assign the Rigidbody attached to the player to the local _rb variable
-        _isDucking = false;
         _isHidden = false;
     }
-
-    private void Update()
-    {
-        CheckDucking();
-    }
-
-    // Update is called once per frame
+    
     private void FixedUpdate()
     {
         float xSpeed = Input.GetAxisRaw("Horizontal");
@@ -60,19 +53,24 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void CheckDucking()
+    public bool GetHiddenValue()
     {
-        // avoids multiple retrievals of transform.position
-        Vector3 currentTransform = transform.position;
-        if (Input.GetKey(KeyCode.LeftControl))
+        return _isHidden;
+    }
+
+    private void OnTriggerEnter(Collider col)
+    {
+        if (col.CompareTag("SmokeArea"))
         {
-            _isDucking = true;
-            transform.position = new Vector3(currentTransform.x, 0.5f, currentTransform.z);
+            _isHidden = true;
         }
-        else
+    }
+
+    private void OnTriggerExit(Collider col)
+    {
+        if (col.CompareTag("SmokeArea"))
         {
-            _isDucking = false;
-            transform.position = new Vector3(currentTransform.x, 2.0f, currentTransform.z);
+            _isHidden = false;
         }
     }
 }

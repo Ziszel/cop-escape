@@ -48,8 +48,8 @@ public class CopController : MonoBehaviour
             if (Physics.Raycast (transform.position, rayDirection, out hit, rayRange)) {
  
                 // use the Player tag to determine if the player has been seen
-                if (hit.collider.gameObject.transform.CompareTag("Player")) {
-                    //Debug.Log("Can see player.");
+                if (hit.collider.gameObject.transform.CompareTag("Player") && !_player.GetHiddenValue()) {
+                    LevelManager.ResetLevel();
                     return true;
                 }
                 //Debug.Log("Can not see player.");
