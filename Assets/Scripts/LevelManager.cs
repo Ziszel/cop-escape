@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 enum GameState
 {
@@ -12,23 +14,26 @@ enum GameState
 
 public class LevelManager : MonoBehaviour
 {
-
+    public TMP_Text hiddenText;
+    
     private GameState _gmState;
     private GameObject[] _cops;
     private GameObject[] _waypoints;
+    private PlayerController _player;
 
     private void Start()
     {
         _gmState = GameState.MainLoop;
         _cops = GameObject.FindGameObjectsWithTag("Cop");
         _waypoints = GameObject.FindGameObjectsWithTag("Waypoint");
+        _player = GameObject.Find("Player").GetComponent<PlayerController>();
     }
 
     private void Update()
     {
         if (_gmState == GameState.MainLoop)
         {
-            // do something if required else remove this if statement later
+            ShouldShowHiddenText();
         }
         else if (_gmState == GameState.PlayerSeen)
         {
@@ -42,6 +47,18 @@ public class LevelManager : MonoBehaviour
         else if (_gmState == GameState.PlayerWon)
         {
             EndGame();
+        }
+    }
+
+    private void ShouldShowHiddenText()
+    {
+        if (_player.GetHiddenValue())
+        {
+            hiddenText.gameObject.SetActive(true);
+        }
+        else
+        {
+            hiddenText.gameObject.SetActive(false);
         }
     }
 

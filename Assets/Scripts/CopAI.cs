@@ -19,10 +19,11 @@ public enum CopState
 public class CopAI : MonoBehaviour
 {
     [SerializeField]private float minimumDistance; // how close the AI should get to a waypoint before selecting a new waypoint
+    [SerializeField] private bool randomPatrol;
     
     private NavMeshAgent _agent; // get a reference to the agent connected to this gameobject
     public Transform[] waypoints; // get a list of waypoints for the agent to move to
-    private int _waypointIndex; // a reference to the currently selected waypoint
+    private int _waypointIndex = 0; // a reference to the currently selected waypoint (value overwritten in Start)
     private Vector3 _target; // the current waypoint target (for checking distance)
     private int _previousWaypoint;
     private CopState _currentState;
@@ -36,7 +37,7 @@ public class CopAI : MonoBehaviour
         _currentState = CopState.Patrolling; // cops ALWAYS start in patrol mode
         // set the waypoint and target values so the AI moves when the scene starts
         //_waypointIndex = 1;
-        SetNextWaypoint();
+        if (randomPatrol) { RandomlySetNextWaypoint(); }; // if patrol is random update the waypoint
         UpdateTargetDestinationToWaypoint();
     }
     
@@ -47,7 +48,8 @@ public class CopAI : MonoBehaviour
             // if the agent is closer than the minimum distance to a waypoint, select a new waypoint and update the target
             if (Vector3.Distance(transform.position, _target) < minimumDistance)
             {
-                SetNextWaypoint();
+                if (randomPatrol) { RandomlySetNextWaypoint(); }
+                else { IterativelySetNextWaypoint(); }
                 UpdateTargetDestinationToWaypoint();
             }   
         }
@@ -69,8 +71,21 @@ public class CopAI : MonoBehaviour
         _agent.SetDestination(_target);
     }
 
+    private void IterativelySetNextWaypoint()
+    {
+        // if index is less than the length of the waypoint array, increment, else point back to the start of the array
+        if (_waypointIndex < waypoints.Length)
+        {
+            _waypointIndex++;
+        }
+        else
+        {
+            _waypointIndex = 0;
+        }
+    }
+    
     // select a random waypoint from the list of waypoints, make sure not to select the same waypoint
-    private void SetNextWaypoint()
+    private void RandomlySetNextWaypoint()
     {
         int oldWaypointIndex = _waypointIndex;
         // select a random point for the agent to move to, never go back and forth between points
