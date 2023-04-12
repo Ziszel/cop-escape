@@ -7,6 +7,7 @@ TagManager:
   - Cop
   - Waypoint
   - SmokeArea
+  - EndTransform
   layers:
   - Default
   - TransparentFX

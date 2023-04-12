@@ -3,7 +3,6 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 enum GameState
 {
@@ -69,24 +68,16 @@ public class LevelManager : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
     
-    private void EndGame()
+    public static void EndGame()
     {
         // Update any global game vars here (best time, best score, etc...)
-        Debug.Log("Game over!");
         ShowWinUI();
     }
 
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            EndGame();
-        }
-    }
-
-    private void ShowWinUI()
+    private static void ShowWinUI()
     {
         // implement later
+        SceneManager.LoadScene("MainMenu");
     }
 
     public CopAI GetNearestCop(Transform localTransform)

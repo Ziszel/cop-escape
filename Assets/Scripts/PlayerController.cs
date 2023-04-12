@@ -64,6 +64,11 @@ public class PlayerController : MonoBehaviour
         {
             _isHidden = true;
         }
+        
+        if (col.CompareTag("EndTransform"))
+        {
+            LevelManager.EndGame();
+        }
     }
 
     private void OnTriggerExit(Collider col)
