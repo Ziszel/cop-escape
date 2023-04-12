@@ -49,8 +49,7 @@ public class CopController : MonoBehaviour
  
                 // use the Player tag to determine if the player has been seen
                 if (hit.collider.gameObject.transform.CompareTag("Player") && !_player.GetHiddenValue()) {
-                    //LevelManager.ResetLevel();
-                    Debug.Log("seen");
+                    LevelManager.ResetLevel();
                     return true;
                 }
                 //Debug.Log("Can not see player.");

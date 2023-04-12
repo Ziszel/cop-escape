@@ -105,7 +105,6 @@ public class CopAI : MonoBehaviour
         // the gate position is only set on the cop that visited the lever, meaning the gate position must be relayed
         // to the cop that will visit the gate FROM the cop that visited the lever
         nearestCop.UpdateWaypoints(_gatePosition);
-        //Debug.Log("Cop alerted");
     }
 
     public void SetState(CopState cs, Transform dest, Transform gatePos)
