@@ -50,6 +50,11 @@ public class CopAI : MonoBehaviour
             {
                 if (randomPatrol) { RandomlySetNextWaypoint(); }
                 else { IterativelySetNextWaypoint(); }
+
+                if (gameObject.name == "Room3SlowCop")
+                {
+                    Debug.Log(_waypointIndex);
+                }
                 UpdateTargetDestinationToWaypoint();
             }   
         }
@@ -77,7 +82,8 @@ public class CopAI : MonoBehaviour
     private void IterativelySetNextWaypoint()
     {
         // if index is less than the length of the waypoint array, increment, else point back to the start of the array
-        if (_waypointIndex < waypoints.Length)
+        // the - 1 on the length ensures the array does not go out of bounds
+        if (_waypointIndex < waypoints.Length - 1)
         {
             _waypointIndex++;
         }

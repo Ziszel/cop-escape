@@ -822,7 +822,7 @@ PrefabInstance:
     - target: {fileID: 5880808530964155540, guid: 7d93d16dfb34eb69b8dc2ef980e3e79d,
         type: 3}
       propertyPath: m_Name
-      value: Cop (1)
+      value: Room1FarCop
       objectReference: {fileID: 0}
     - target: {fileID: 5880808530964155540, guid: 7d93d16dfb34eb69b8dc2ef980e3e79d,
         type: 3}
@@ -1636,7 +1636,7 @@ PrefabInstance:
     - target: {fileID: 5880808530964155540, guid: 7d93d16dfb34eb69b8dc2ef980e3e79d,
         type: 3}
       propertyPath: m_Name
-      value: Cop
+      value: Room2Cop
       objectReference: {fileID: 0}
     - target: {fileID: 5880808530964155549, guid: 7d93d16dfb34eb69b8dc2ef980e3e79d,
         type: 3}
@@ -2798,7 +2798,7 @@ PrefabInstance:
     - target: {fileID: 5880808530964155540, guid: 7d93d16dfb34eb69b8dc2ef980e3e79d,
         type: 3}
       propertyPath: m_Name
-      value: Cop
+      value: Room3SlowCop
       objectReference: {fileID: 0}
     - target: {fileID: 5880808530964155549, guid: 7d93d16dfb34eb69b8dc2ef980e3e79d,
         type: 3}
@@ -15380,7 +15380,7 @@ PrefabInstance:
     - target: {fileID: 5880808530964155540, guid: 7d93d16dfb34eb69b8dc2ef980e3e79d,
         type: 3}
       propertyPath: m_Name
-      value: Cop (3)
+      value: Room4Cop
       objectReference: {fileID: 0}
     - target: {fileID: 5880808530964155549, guid: 7d93d16dfb34eb69b8dc2ef980e3e79d,
         type: 3}
@@ -15520,7 +15520,7 @@ PrefabInstance:
     - target: {fileID: 5880808530964155540, guid: 7d93d16dfb34eb69b8dc2ef980e3e79d,
         type: 3}
       propertyPath: m_Name
-      value: Cop (2)
+      value: Room3IdleCop
       objectReference: {fileID: 0}
     - target: {fileID: 5880808530964155549, guid: 7d93d16dfb34eb69b8dc2ef980e3e79d,
         type: 3}
@@ -33688,7 +33688,7 @@ PrefabInstance:
     - target: {fileID: 5880808530964155540, guid: 7d93d16dfb34eb69b8dc2ef980e3e79d,
         type: 3}
       propertyPath: m_Name
-      value: Cop
+      value: Room1CloseCop
       objectReference: {fileID: 0}
     - target: {fileID: 5880808530964155540, guid: 7d93d16dfb34eb69b8dc2ef980e3e79d,
         type: 3}
