@@ -100,7 +100,7 @@ public class LevelManager : MonoBehaviour
         return closest.GetComponent<CopAI>();
     }
 
-    public Transform[] GetClosestWayPoints(int depth, Transform startPos)
+    public Transform[] GetClosestWayPoints(Transform startPos, int depth)
     {
         // From a point, return all the nearest wayPoints by Vector3 Distance up to a certain depth
         List<Transform> returnWaypoints = new List<Transform>();

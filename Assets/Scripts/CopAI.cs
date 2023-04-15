@@ -13,20 +13,21 @@ public enum CopState
 {
     Patrolling = 0, // Standard patrol cycle (could be influenced by recent reports from other cops)
     Investigating = 1, // Has seen something of interest and moving towards it before radioing for backup
-    Assisting = 2 // Moving to a new patrol location closest to a report from another cop
+    Idle = 2 // Cop is currently doing nothing
 }
 
 public class CopAI : MonoBehaviour
 {
-    [SerializeField]private float minimumDistance; // how close the AI should get to a waypoint before selecting a new waypoint
+    [SerializeField] private float minimumDistance; // how close the AI should get to a waypoint before selecting a new waypoint
     [SerializeField] private bool randomPatrol;
+    [SerializeField] private int waypointUpdateDepth;
+    [SerializeField] private CopState currentState;
     
     private NavMeshAgent _agent; // get a reference to the agent connected to this gameobject
     public Transform[] waypoints; // get a list of waypoints for the agent to move to
     private int _waypointIndex = 0; // a reference to the currently selected waypoint (value overwritten in Start)
     private Vector3 _target; // the current waypoint target (for checking distance)
     private int _previousWaypoint;
-    private CopState _currentState;
     private Transform _gatePosition;
     private LevelManager _lm;
 
@@ -34,16 +35,15 @@ public class CopAI : MonoBehaviour
     {
         _lm = GameObject.Find("LevelManager").GetComponent<LevelManager>();
         _agent = GetComponent<NavMeshAgent>();
-        _currentState = CopState.Patrolling; // cops ALWAYS start in patrol mode
         // set the waypoint and target values so the AI moves when the scene starts
         //_waypointIndex = 1;
         if (randomPatrol) { RandomlySetNextWaypoint(); }; // if patrol is random update the waypoint
-        UpdateTargetDestinationToWaypoint();
+        if (currentState == CopState.Patrolling) { UpdateTargetDestinationToWaypoint(); }
     }
     
     private void Update()
     {
-        if (_currentState == CopState.Patrolling)
+        if (currentState == CopState.Patrolling)
         {
             // if the agent is closer than the minimum distance to a waypoint, select a new waypoint and update the target
             if (Vector3.Distance(transform.position, _target) < minimumDistance)
@@ -53,15 +53,18 @@ public class CopAI : MonoBehaviour
                 UpdateTargetDestinationToWaypoint();
             }   
         }
-        else if (_currentState == CopState.Investigating)
+        else if (currentState == CopState.Investigating)
         {
             if (Vector3.Distance(transform.position, _target) < minimumDistance + 5)
             {
                 AlertFriendlyCop(); // alert nearest cop to the gate to investigate that area
-                _currentState = CopState.Patrolling; // return to patrolling as usual
+                currentState = CopState.Patrolling; // return to patrolling as usual
                 UpdateTargetDestinationToWaypoint(); // Make sure a new target is set to allow for patrol
             }
         }
+        
+        // If cop is idle then I don't want to do anything with it. This particular state comes in handy to get them
+        // watching an area, but also as a flag to update waypoints later!
     }
 
     // set _target == to the current waypoint's position
@@ -104,7 +107,7 @@ public class CopAI : MonoBehaviour
         // Update that cop's waypoints to be the x nearest waypoints to the gate position
         // the gate position is only set on the cop that visited the lever, meaning the gate position must be relayed
         // to the cop that will visit the gate FROM the cop that visited the lever
-        nearestCop.UpdateWaypoints(_gatePosition);
+        nearestCop.UpdateWaypoints(_gatePosition, waypointUpdateDepth);
     }
 
     public void SetState(CopState cs, Transform dest, Transform gatePos)
@@ -112,15 +115,27 @@ public class CopAI : MonoBehaviour
         if (cs == CopState.Investigating)
         {
             Vector3 pos = dest.position; // get the position of the transform for the cop to investigate
-            _currentState = cs;
+            currentState = cs;
             _target = pos;
             _gatePosition = gatePos;
             _agent.SetDestination(pos);
         }
     }
 
-    private void UpdateWaypoints(Transform gatePos)
+    private void UpdateWaypoints(Transform gatePos, int depth)
     {
-        waypoints = _lm.GetClosestWayPoints(5, gatePos); // updates the cops waypoints
+        if (currentState != CopState.Idle)
+        {
+            waypoints = _lm.GetClosestWayPoints(gatePos, depth); // updates the cops waypoints   
+        }
+        else
+        {
+            // Do not update the waypoints, this is because better waypoints have been set in the editor for finer
+            // control over this particular cop. This is a little rigid as it assumes the cop will not be moving at first
+            // until a lever has been pulled. From play-testing, the full random setup was a little troublesome for certain
+            // players, so this will allow for a mixture of both settings to avoid overwhelming them.
+            UpdateTargetDestinationToWaypoint();
+            currentState = CopState.Patrolling;
+        }
     }
 }
