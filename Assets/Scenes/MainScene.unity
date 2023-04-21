@@ -897,7 +897,7 @@ PrefabInstance:
     - target: {fileID: 5880808530964155551, guid: 7d93d16dfb34eb69b8dc2ef980e3e79d,
         type: 3}
       propertyPath: rayRange
-      value: 30
+      value: 50
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7d93d16dfb34eb69b8dc2ef980e3e79d, type: 3}
@@ -1696,7 +1696,7 @@ PrefabInstance:
     - target: {fileID: 5880808530964155551, guid: 7d93d16dfb34eb69b8dc2ef980e3e79d,
         type: 3}
       propertyPath: rayRange
-      value: 30
+      value: 50
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7d93d16dfb34eb69b8dc2ef980e3e79d, type: 3}
@@ -2841,7 +2841,7 @@ PrefabInstance:
     - target: {fileID: 5880808530964155551, guid: 7d93d16dfb34eb69b8dc2ef980e3e79d,
         type: 3}
       propertyPath: rayRange
-      value: 30
+      value: 50
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7d93d16dfb34eb69b8dc2ef980e3e79d, type: 3}
@@ -3235,7 +3235,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerVisibleSlider: {fileID: 922320313}
   hiddenText: {fileID: 1680969182}
-  _timerValue: 2
+  _timerValue: 1
 --- !u!82 &558048911
 AudioSource:
   m_ObjectHideFlags: 0
@@ -4146,7 +4146,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 9ef9768a4da6bab53800a384293ba2ef, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -15789,7 +15789,7 @@ PrefabInstance:
     - target: {fileID: 5880808530964155551, guid: 7d93d16dfb34eb69b8dc2ef980e3e79d,
         type: 3}
       propertyPath: rayRange
-      value: 30
+      value: 50
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7d93d16dfb34eb69b8dc2ef980e3e79d, type: 3}
@@ -15929,7 +15929,7 @@ PrefabInstance:
     - target: {fileID: 5880808530964155551, guid: 7d93d16dfb34eb69b8dc2ef980e3e79d,
         type: 3}
       propertyPath: rayRange
-      value: 30
+      value: 50
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7d93d16dfb34eb69b8dc2ef980e3e79d, type: 3}
@@ -16179,6 +16179,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2588567128617679800, guid: 825d59dc5f46932deb95384ccf49cc2e,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 4275513c3e63b932c863867f87324c4d, type: 2}
     - target: {fileID: 6412129195277422656, guid: 825d59dc5f46932deb95384ccf49cc2e,
         type: 3}
       propertyPath: m_Name
@@ -34131,32 +34136,32 @@ PrefabInstance:
     - target: {fileID: 5551751000316223591, guid: d6c0b9823a969ddf8891b74f32b9f6e3,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 35.92
       objectReference: {fileID: 0}
     - target: {fileID: 5551751000316223591, guid: d6c0b9823a969ddf8891b74f32b9f6e3,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.09
       objectReference: {fileID: 0}
     - target: {fileID: 5551751000316223591, guid: d6c0b9823a969ddf8891b74f32b9f6e3,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 37.14
       objectReference: {fileID: 0}
     - target: {fileID: 5551751000316223591, guid: d6c0b9823a969ddf8891b74f32b9f6e3,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: -0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 5551751000316223591, guid: d6c0b9823a969ddf8891b74f32b9f6e3,
         type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5551751000316223591, guid: d6c0b9823a969ddf8891b74f32b9f6e3,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: 5551751000316223591, guid: d6c0b9823a969ddf8891b74f32b9f6e3,
         type: 3}
@@ -34171,7 +34176,7 @@ PrefabInstance:
     - target: {fileID: 5551751000316223591, guid: d6c0b9823a969ddf8891b74f32b9f6e3,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: 270
       objectReference: {fileID: 0}
     - target: {fileID: 5551751000316223591, guid: d6c0b9823a969ddf8891b74f32b9f6e3,
         type: 3}
@@ -34320,7 +34325,7 @@ PrefabInstance:
     - target: {fileID: 5880808530964155551, guid: 7d93d16dfb34eb69b8dc2ef980e3e79d,
         type: 3}
       propertyPath: rayRange
-      value: 30
+      value: 50
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7d93d16dfb34eb69b8dc2ef980e3e79d, type: 3}
