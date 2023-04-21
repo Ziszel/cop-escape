@@ -251,7 +251,7 @@ GameObject:
   - component: {fileID: 174848210}
   - component: {fileID: 174848209}
   m_Layer: 0
-  m_Name: Button
+  m_Name: BeginButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -476,7 +476,7 @@ GameObject:
   - component: {fileID: 513919514}
   - component: {fileID: 513919513}
   m_Layer: 0
-  m_Name: Image
+  m_Name: Logo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -515,7 +515,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -1138,6 +1138,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   beginBtn: {fileID: 174848209}
+  logoImage: {fileID: 513919513}
 --- !u!4 &1675638671
 Transform:
   m_ObjectHideFlags: 0

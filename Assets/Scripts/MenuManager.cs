@@ -6,12 +6,16 @@ using UnityEngine.UI;
 public class MenuManager : MonoBehaviour
 {
     public Button beginBtn;
+    public Image logoImage;
+    
     private AudioSource _flavour;
+    private float _fadeRate = 0.02f;
 
     private void Start()
     {
         _flavour = GetComponent<AudioSource>();
         beginBtn.onClick.AddListener(BeginClicked);
+        StartCoroutine(FadeIn());
     }
 
     private void BeginClicked()
@@ -42,4 +46,19 @@ public class MenuManager : MonoBehaviour
         LoadMainScene();
     }
 
+    // https://stackoverflow.com/questions/56516299/how-to-fade-in-ui-image-in-unity
+    IEnumerator FadeIn()
+    {
+        // the targetAlpha is 1.0f meaning 255 in the alpha channel of the image
+        float targetAlpha = 1.0f;
+        Color currentColor = logoImage.color; // You cannot set a colour directly, thus a secondly variable is used
+        while(currentColor.a < targetAlpha) {
+            Debug.Log(currentColor.a);
+            // lerp the colour towards the targetAlpha by the fadeRate for a smooth transition
+            currentColor.a = Mathf.Lerp(currentColor.a, targetAlpha, _fadeRate * Time.deltaTime);
+            // Update the logo colour by the now updated colour value
+            logoImage.color = currentColor;
+            yield return null;
+        }
+    }
 }
