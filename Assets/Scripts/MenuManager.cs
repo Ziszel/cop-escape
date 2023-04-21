@@ -9,7 +9,7 @@ public class MenuManager : MonoBehaviour
     public Image logoImage;
     
     private AudioSource _flavour;
-    private float _fadeRate = 0.02f;
+    private readonly float _fadeRate = 0.02f;
 
     private void Start()
     {
@@ -53,7 +53,6 @@ public class MenuManager : MonoBehaviour
         float targetAlpha = 1.0f;
         Color currentColor = logoImage.color; // You cannot set a colour directly, thus a secondly variable is used
         while(currentColor.a < targetAlpha) {
-            Debug.Log(currentColor.a);
             // lerp the colour towards the targetAlpha by the fadeRate for a smooth transition
             currentColor.a = Mathf.Lerp(currentColor.a, targetAlpha, _fadeRate * Time.deltaTime);
             // Update the logo colour by the now updated colour value
