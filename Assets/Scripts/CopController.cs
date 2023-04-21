@@ -2,10 +2,12 @@ using UnityEngine;
 
 public class CopController : MonoBehaviour
 {
+    public bool localIsPlayerInView;
+    
     [SerializeField] private float closeDistanceRange; // The range at which the 
     [SerializeField] private float rayRange;
     [SerializeField] private float fieldOfViewAngle;
-    
+
     private GameObject _playerObj;
     private PlayerController _player;
 
@@ -19,7 +21,9 @@ public class CopController : MonoBehaviour
 
     private void Update()
     {
-        ScanForPlayer();
+        // Level manager will check this value for each cop and if any are set to true the timer will increase
+        localIsPlayerInView = ScanForPlayer();
+
     }
 
     // https://answers.unity.com/questions/15735/field-of-view-using-raycasting.html
@@ -49,16 +53,12 @@ public class CopController : MonoBehaviour
  
                 // use the Player tag to determine if the player has been seen
                 if (hit.collider.gameObject.transform.CompareTag("Player") && !_player.GetHiddenValue()) {
-                    //LevelManager.ResetLevel();
-                    Debug.Log("player seen");
+                    //Debug.Log("player seen");
                     return true;
                 }
-                //Debug.Log("Can not see player.");
                 return false;
             }
         }
         return false;
     }
-    
-    
 }

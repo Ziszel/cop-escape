@@ -50,11 +50,7 @@ public class CopAI : MonoBehaviour
             {
                 if (randomPatrol) { RandomlySetNextWaypoint(); }
                 else { IterativelySetNextWaypoint(); }
-
-                if (gameObject.name == "Room3SlowCop")
-                {
-                    Debug.Log(_waypointIndex);
-                }
+                
                 UpdateTargetDestinationToWaypoint();
             }   
         }
