@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -16,9 +17,17 @@ public class LevelManager : MonoBehaviour
 {
     public Slider playerVisibleSlider;
     public TMP_Text hiddenText;
+    public TMP_Text okText;
+    public TMP_Text seenText;
+    public TMP_Text returnText;
+    public TMP_Text deadText;
+    public RawImage minimap;
+    public Image deathScreen;
+    public AudioSource mainLoopMusic;
+    public AudioSource deathMusic;
 
     [Header("Difficulty")]
-    [SerializeField] private float _timerValue = 2.0f;
+    [SerializeField] private float timerValue = 1.2f;
     
     private GameState _gmState;
     private GameObject[] _cops;
@@ -27,6 +36,8 @@ public class LevelManager : MonoBehaviour
     private float _sliderValue;
     private List<CopController> _copControllerList;
     private float _seenMeterTimer;
+    private float _showDeathTextTimer;
+    private readonly float _fadeRate = 1.2f;
 
     private void Start()
     {
@@ -36,7 +47,8 @@ public class LevelManager : MonoBehaviour
         _waypoints = GameObject.FindGameObjectsWithTag("Waypoint");
         _player = GameObject.Find("Player").GetComponent<PlayerController>();
         _sliderValue = playerVisibleSlider.value;
-        ResetTimer();
+        _showDeathTextTimer = 2.5f;
+        ResetSeenTimer();
     }
 
     private void Update()
@@ -49,21 +61,32 @@ public class LevelManager : MonoBehaviour
             {
                 // https://www.youtube.com/watch?v=tWUyEfD0kV0
                 UpdateVisibilitySlider();
-                ResetTimer();
+                ResetSeenTimer();
             }
-            UpdateTimer();
+            UpdateSeenTimer();
 
             if (_sliderValue == 4)
             {
+                ShowDeathScreen();
+                mainLoopMusic.Stop();
+                deathMusic.Play();
                 _gmState = GameState.PlayerSeen;
-                ResetLevel();
             }
         }
 
         else if (_gmState == GameState.PlayerSeen)
         {
-            // stop game loop
-            // show end game UI
+            if (_showDeathTextTimer > 0)
+            {
+                UpdateShowDeathTimer();
+            }
+
+            if (_showDeathTextTimer <= 0)
+            {
+                deadText.gameObject.SetActive(true);
+                returnText.gameObject.SetActive(true);
+            }
+            
             if (Input.GetKeyDown(KeyCode.Return))
             {
                 ResetLevel();
@@ -89,14 +112,19 @@ public class LevelManager : MonoBehaviour
         return false;
     }
 
-    private void UpdateTimer()
+    private void UpdateShowDeathTimer()
+    {
+        _showDeathTextTimer -= Time.deltaTime;
+    }
+    
+    private void UpdateSeenTimer()
     {
         _seenMeterTimer -= Time.deltaTime;
     }
     
-    private void ResetTimer()
+    private void ResetSeenTimer()
     {
-        _seenMeterTimer = _timerValue;
+        _seenMeterTimer = timerValue;
     }
 
     // UI RELATED
@@ -143,6 +171,25 @@ public class LevelManager : MonoBehaviour
     {
         // implement later
         SceneManager.LoadScene("MainMenu");
+    }
+
+    private void ShowDeathScreen()
+    {
+        // Fade the screen black
+        DisableMainLoopUI();
+        deathScreen.gameObject.SetActive(true);
+        StartCoroutine(FadeIn(deathScreen));
+        
+        // Draw the fail text & button to restart
+    }
+
+    // Set all unneeded UI elements to not active. They will re-activated when the scene is reloaded
+    private void DisableMainLoopUI()
+    {
+        playerVisibleSlider.gameObject.SetActive(false);
+        okText.gameObject.SetActive(false);
+        seenText.gameObject.SetActive(false);
+        minimap.gameObject.SetActive(false);
     }
 
     // GAME STATE RELATED
@@ -218,5 +265,20 @@ public class LevelManager : MonoBehaviour
         }
         
         return returnWaypoints.ToArray(); // return the list as an array 
+    }
+    
+    // https://stackoverflow.com/questions/56516299/how-to-fade-in-ui-image-in-unity
+    IEnumerator FadeIn(Image image)
+    {
+        // the targetAlpha is 1.0f meaning 255 in the alpha channel of the image
+        float targetAlpha = 1.0f;
+        Color currentColor = image.color; // You cannot set a colour directly, thus a secondly variable is used
+        while(currentColor.a < targetAlpha) {
+            // lerp the colour towards the targetAlpha by the fadeRate for a smooth transition
+            currentColor.a = Mathf.Lerp(currentColor.a, targetAlpha, _fadeRate * Time.deltaTime);
+            // Update the logo colour by the now updated colour value
+            image.color = currentColor;
+            yield return null;
+        }
     }
 }

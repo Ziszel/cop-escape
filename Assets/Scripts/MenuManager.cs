@@ -7,7 +7,7 @@ public class MenuManager : MonoBehaviour
 {
     public Button beginBtn;
     public Image logoImage;
-    
+
     private AudioSource _flavour;
     private readonly float _fadeRate = 0.02f;
 
