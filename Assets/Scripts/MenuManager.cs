@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -10,9 +9,12 @@ public class MenuManager : MonoBehaviour
     public Image logoImage;
     public Image backgroundImage;
     public Image backgroundImage2;
-
-    private AudioSource _flavour;
-    private readonly float _fadeRate = 0.2f; // Determines the rate at which the logo fades in
+    public Image fadeBackground;
+    public AudioSource flavour;
+    public AudioSource mainTrack;
+    
+    private readonly float _logoFadeRate = 0.2f; // Determines the rate at which the logo fades in
+    private readonly float _buttonClickFadeRate = 2.5f; // Determines the rate at which the logo fades in
     private readonly float _scrollSpeed = 20.0f; // Determines how quickly the parallax background scrolls
     private Vector3 _backgroundImageStartPos; // store the start positions for resetting later
     private Vector3 _backgroundImage2StartPos;
@@ -20,9 +22,8 @@ public class MenuManager : MonoBehaviour
 
     private void Start()
     {
-        _flavour = GetComponent<AudioSource>(); // sound that plays when the button BEGIN is pressed
         beginBtn.onClick.AddListener(BeginClicked);
-        StartCoroutine(FadeIn()); // begin fading in the logo
+        StartCoroutine(FadeIn(logoImage, _logoFadeRate)); // begin fading in the logo
         // https://stackoverflow.com/questions/60487667/unity-2d-get-the-x-axis-and-width-of-the-rendered-ui-image-and-not-the-values-o
         // I need the width of the RectTransform NOT the width of the texture
         _backgroundSize = backgroundImage.transform.GetComponent<RectTransform>().rect.width;
@@ -63,8 +64,9 @@ public class MenuManager : MonoBehaviour
     private void BeginClicked()
     {
         // Once shorter audio track is sourced this will be re-enabled
-        //StartCoroutine(PlayFlavourTrack());
-        LoadMainScene();
+        fadeBackground.gameObject.SetActive(true); // if this is active on scene start you can't click the button
+        StartCoroutine(PlayFlavourTrack());
+        StartCoroutine(FadeIn(fadeBackground, _buttonClickFadeRate));
     }
 
     private void LoadMainScene()
@@ -74,11 +76,13 @@ public class MenuManager : MonoBehaviour
     
     IEnumerator PlayFlavourTrack()
     {
+        // Stop current track
+        mainTrack.Stop();
         // Begin playing the track
-        _flavour.Play();
+        flavour.Play();
         // Wait until the track is finished before loading the main scene.
         // Since the track is very short this will look more like a sound effect but with no cutting off.
-        while (_flavour.isPlaying)
+        while (flavour.isPlaying)
         {
             // In here, an animation could be ran at the same time (perhaps fading to black?)
             yield return null;
@@ -90,16 +94,16 @@ public class MenuManager : MonoBehaviour
 
     // https://stackoverflow.com/questions/56516299/how-to-fade-in-ui-image-in-unity
     // This co-routine will fade the logo in over time (dictated by _fadeRate)
-    IEnumerator FadeIn()
+    IEnumerator FadeIn(Image image, float fadeRate)
     {
         // the targetAlpha is 1.0f meaning 255 in the alpha channel of the image
         float targetAlpha = 1.0f;
-        Color currentColor = logoImage.color; // You cannot set a colour directly, thus a secondly variable is used
+        Color currentColor = image.color; // You cannot set a colour directly, thus a secondly variable is used
         while(currentColor.a < targetAlpha) {
             // lerp the colour towards the targetAlpha by the fadeRate for a smooth transition
-            currentColor.a = Mathf.Lerp(currentColor.a, targetAlpha, _fadeRate * Time.deltaTime);
+            currentColor.a = Mathf.Lerp(currentColor.a, targetAlpha, fadeRate * Time.deltaTime);
             // Update the logo colour by the now updated colour value
-            logoImage.color = currentColor;
+            image.color = currentColor;
             yield return null;
         }
     }
