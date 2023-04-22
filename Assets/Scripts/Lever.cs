@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Lever : MonoBehaviour
@@ -18,10 +17,14 @@ public class Lever : MonoBehaviour
     private bool _handlePressed;
     private CopAI _nearestCop;
     private LevelManager _lm;
-    
+    private AudioSource _leverSfx;
+    private int _playCount;
+
 
     private void Start()
     {
+        _playCount = 0;
+        _leverSfx = GetComponent<AudioSource>();
         _playerObj = GameObject.Find("Player"); // only one player so this is safe
         _playerPosition = _playerObj.transform;
         // https://docs.unity3d.com/ScriptReference/Transform.Find.html
@@ -34,6 +37,14 @@ public class Lever : MonoBehaviour
     {
         if (Vector3.Distance(_playerPosition.position, transform.position) <= distanceTolerance && !_handlePressed)
         {
+            // This seems a little odd, but it stops the sound from being spam started OR playing multiple times
+            // I wonder if there is a more 'professional' way of handling this inside of Unity?
+            if (_playCount < 1 && !_leverSfx.isPlaying)
+            {
+                // https://docs.unity3d.com/ScriptReference/AudioSource.PlayOneShot.html
+                _leverSfx.Play();
+                _playCount++;
+            }
             StartCoroutine(RotateLever(rotationDuration));
             StartCoroutine(MoveGate(rotationDuration));
             AlertNearestCop();
