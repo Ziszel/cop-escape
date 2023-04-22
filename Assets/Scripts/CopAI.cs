@@ -43,27 +43,41 @@ public class CopAI : MonoBehaviour
     
     private void Update()
     {
-        if (currentState == CopState.Patrolling)
+        if (LevelManager.GetGameState() == GameState.MainLoop)
         {
-            // if the agent is closer than the minimum distance to a waypoint, select a new waypoint and update the target
-            if (Vector3.Distance(transform.position, _target) < minimumDistance)
+            if (currentState == CopState.Patrolling)
             {
-                if (randomPatrol) { RandomlySetNextWaypoint(); }
-                else { IterativelySetNextWaypoint(); }
-                
-                UpdateTargetDestinationToWaypoint();
-            }   
-        }
-        else if (currentState == CopState.Investigating)
-        {
-            if (Vector3.Distance(transform.position, _target) < minimumDistance + 5)
+                // if the agent is closer than the minimum distance to a waypoint, select a new waypoint and update the target
+                if (Vector3.Distance(transform.position, _target) < minimumDistance)
+                {
+                    if (randomPatrol)
+                    {
+                        RandomlySetNextWaypoint();
+                    }
+                    else
+                    {
+                        IterativelySetNextWaypoint();
+                    }
+
+                    UpdateTargetDestinationToWaypoint();
+                }
+            }
+            else if (currentState == CopState.Investigating)
             {
-                AlertFriendlyCop(); // alert nearest cop to the gate to investigate that area
-                currentState = CopState.Patrolling; // return to patrolling as usual
-                UpdateTargetDestinationToWaypoint(); // Make sure a new target is set to allow for patrol
+                if (Vector3.Distance(transform.position, _target) < minimumDistance + 5)
+                {
+                    AlertFriendlyCop(); // alert nearest cop to the gate to investigate that area
+                    currentState = CopState.Patrolling; // return to patrolling as usual
+                    UpdateTargetDestinationToWaypoint(); // Make sure a new target is set to allow for patrol
+                }
             }
         }
-        
+        else
+        {
+            currentState = CopState.Idle;
+            _agent.SetDestination(transform.position);
+        }
+
         // If cop is idle then I don't want to do anything with it. This particular state comes in handy to get them
         // watching an area, but also as a flag to update waypoints later!
     }

@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-enum GameState
+public enum GameState
 {
     MainLoop,
     PlayerSeen,
@@ -29,7 +29,7 @@ public class LevelManager : MonoBehaviour
     [Header("Difficulty")]
     [SerializeField] private float timerValue = 1.2f;
     
-    private GameState _gmState;
+    private static GameState gmState;
     private GameObject[] _cops;
     private GameObject[] _waypoints;
     private PlayerController _player;
@@ -41,7 +41,7 @@ public class LevelManager : MonoBehaviour
 
     private void Start()
     {
-        _gmState = GameState.MainLoop;
+        gmState = GameState.MainLoop;
         _cops = GameObject.FindGameObjectsWithTag("Cop");
         _copControllerList = GetCopControllerFromGameobject();
         _waypoints = GameObject.FindGameObjectsWithTag("Waypoint");
@@ -53,7 +53,7 @@ public class LevelManager : MonoBehaviour
 
     private void Update()
     {
-        if (_gmState == GameState.MainLoop)
+        if (gmState == GameState.MainLoop)
         {
             ShouldShowHiddenText();
 
@@ -70,11 +70,11 @@ public class LevelManager : MonoBehaviour
                 ShowDeathScreen();
                 mainLoopMusic.Stop();
                 deathMusic.Play();
-                _gmState = GameState.PlayerSeen;
+                gmState = GameState.PlayerSeen;
             }
         }
 
-        else if (_gmState == GameState.PlayerSeen)
+        else if (gmState == GameState.PlayerSeen)
         {
             if (_showDeathTextTimer > 0)
             {
@@ -92,7 +92,7 @@ public class LevelManager : MonoBehaviour
                 ResetLevel();
             }
         }
-        else if (_gmState == GameState.PlayerWon)
+        else if (gmState == GameState.PlayerWon)
         {
             EndGame();
         }
@@ -265,6 +265,11 @@ public class LevelManager : MonoBehaviour
         }
         
         return returnWaypoints.ToArray(); // return the list as an array 
+    }
+
+    public static GameState GetGameState()
+    {
+        return gmState;
     }
     
     // https://stackoverflow.com/questions/56516299/how-to-fade-in-ui-image-in-unity

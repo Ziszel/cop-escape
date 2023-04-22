@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -19,13 +18,18 @@ public class PlayerController : MonoBehaviour
     
     private void FixedUpdate()
     {
-        float xSpeed = Input.GetAxisRaw("Horizontal");
-        float zSpeed = Input.GetAxisRaw("Vertical");
-
-        if (xSpeed != 0 || zSpeed != 0)
+        // Stop the player moving if they are caught
+        if (LevelManager.GetGameState() == GameState.MainLoop)
         {
-            MovePlayer(xSpeed, zSpeed);
+            float xSpeed = Input.GetAxisRaw("Horizontal");
+            float zSpeed = Input.GetAxisRaw("Vertical");
+
+            if (xSpeed != 0 || zSpeed != 0)
+            {
+                MovePlayer(xSpeed, zSpeed);
+            }
         }
+        
     }
 
     // Movement handled by Rigidbody, therefore no need to adjust values by Time.deltatime
