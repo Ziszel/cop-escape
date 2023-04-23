@@ -3,11 +3,10 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [Header("Move parameters")]
-    [SerializeField] private float speed;
+    [SerializeField] private float speed; // Movement speed
     
     private bool _isHidden; // will track if player is in shadows
     private Rigidbody _rb;
-    private Transform _tr;
 
     // Start is called before the first frame update
     void Start()
@@ -37,31 +36,34 @@ public class PlayerController : MonoBehaviour
     private void MovePlayer(float xSpeed, float zSpeed)
     {
         // forward / backward movement
+        // https://docs.unity3d.com/ScriptReference/Rigidbody.AddForce.html
         if (zSpeed > 0)
         {
-            _rb.AddForce(transform.forward * speed);
+            _rb.AddForce(new Vector3(0.0f, 0.0f, speed));
         }
         else if (zSpeed < 0)
         {
-            _rb.AddForce(transform.forward * -speed);
+            _rb.AddForce(new Vector3(0.0f, 0.0f, -speed));
         }
         
         // Left / right movement
         if (xSpeed > 0)
         {
-            _rb.AddForce(transform.right * speed);
+            _rb.AddForce(new Vector3(speed, 0.0f, 0.0f));
         }
         else if (xSpeed < 0)
         {
-            _rb.AddForce(transform.right * -speed);
+            _rb.AddForce(new Vector3(-speed, 0.0f, 0.0f));
         }
     }
 
+    // Getter for _isHidden
     public bool GetHiddenValue()
     {
         return _isHidden;
     }
 
+    // Keep the collision logic for the player IN the player class
     private void OnTriggerEnter(Collider col)
     {
         if (col.CompareTag("SmokeArea"))
