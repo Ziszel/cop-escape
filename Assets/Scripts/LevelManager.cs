@@ -22,6 +22,7 @@ public class LevelManager : MonoBehaviour
     public TMP_Text returnText;
     public TMP_Text deadText;
     public RawImage minimap;
+    public Image minimapMask;
     public Image deathScreen;
     public AudioSource mainLoopMusic;
     public AudioSource deathMusic;
@@ -190,6 +191,7 @@ public class LevelManager : MonoBehaviour
         okText.gameObject.SetActive(false);
         seenText.gameObject.SetActive(false);
         minimap.gameObject.SetActive(false);
+        minimapMask.gameObject.SetActive(false);
     }
 
     // GAME STATE RELATED
