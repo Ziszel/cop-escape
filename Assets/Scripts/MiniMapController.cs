@@ -8,7 +8,7 @@ public class MiniMapController : MonoBehaviour
     void Start()
     {
         AlignCamera();
-        _offset = new Vector3(15.0f, 0.0f, 15.0f);
+        _offset = new Vector3(-5.0f, 0.0f, -5.0f);
     }
 
     // Update is called once per frame
