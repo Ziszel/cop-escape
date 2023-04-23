@@ -4,6 +4,7 @@ public class PlayerController : MonoBehaviour
 {
     [Header("Move parameters")]
     [SerializeField] private float speed; // Movement speed
+    [SerializeField] private float rotationSpeed;
     
     private bool _isHidden; // will track if player is in shadows
     private Rigidbody _rb;
@@ -26,6 +27,7 @@ public class PlayerController : MonoBehaviour
             if (xSpeed != 0 || zSpeed != 0)
             {
                 MovePlayer(xSpeed, zSpeed);
+                RotatePlayer();
             }
         }
         
@@ -54,6 +56,22 @@ public class PlayerController : MonoBehaviour
         else if (xSpeed < 0)
         {
             _rb.AddForce(new Vector3(-speed, 0.0f, 0.0f));
+        }
+    }
+
+    private void RotatePlayer()
+    {
+        // the vector in which I want to look, and that == the current movement
+        // https://forum.unity.com/threads/how-quaternion-lookrotation-works.985800/
+        Vector3 movement = new Vector3(_rb.velocity.x, 0.0f, _rb.velocity.z);
+        
+        if (movement != Vector3.zero) // Ensures no 'Look Rotation Viewing Vector is Zero' error
+        {
+            // spherical lerp from the current rotation to the angle the player is attempting to move to
+            // slerp treats a vector like a direction rather than a position which is perfect for working with rotations
+            // https://www.reddit.com/r/Unity3D/comments/6iskah/movetowards_vs_lerp_vs_slerp_vs_smoothdamp/
+            transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(movement),
+                rotationSpeed * Time.deltaTime);
         }
     }
 
