@@ -77,7 +77,7 @@ public class Lever : MonoBehaviour
         Vector3 currentPosition = gatePosition.transform.position;
 
         Vector3 targetPosition = new Vector3(currentPosition.x,
-            currentPosition.y - 5,
+            currentPosition.y - 25,
             currentPosition.z);
 
         float time = 0.0f;
