@@ -13,7 +13,8 @@ public enum CopState
 {
     Patrolling = 0, // Standard patrol cycle (could be influenced by recent reports from other cops)
     Investigating = 1, // Has seen something of interest and moving towards it before radioing for backup
-    Idle = 2 // Cop is currently doing nothing
+    Idle = 2, // Cop is currently doing nothing
+    Chasing = 3
 }
 
 public class CopAI : MonoBehaviour
@@ -30,10 +31,12 @@ public class CopAI : MonoBehaviour
     private int _previousWaypoint;
     private Transform _gatePosition;
     private LevelManager _lm;
+    private PlayerController _pc;
 
     void Start()
     {
         _lm = GameObject.Find("LevelManager").GetComponent<LevelManager>();
+        _pc = GameObject.Find("Player").GetComponent<PlayerController>();
         _agent = GetComponent<NavMeshAgent>();
         // set the waypoint and target values so the AI moves when the scene starts
         //_waypointIndex = 1;
@@ -70,6 +73,11 @@ public class CopAI : MonoBehaviour
                     currentState = CopState.Patrolling; // return to patrolling as usual
                     UpdateTargetDestinationToWaypoint(); // Make sure a new target is set to allow for patrol
                 }
+            }
+            else if (currentState == CopState.Chasing)
+            {
+                _target = _pc.transform.position;
+                _agent.SetDestination(_target);
             }
         }
         else
@@ -136,6 +144,20 @@ public class CopAI : MonoBehaviour
             _gatePosition = gatePos;
             _agent.SetDestination(pos);
         }
+
+        if (currentState == CopState.Chasing)
+        {
+            // set the target to the closest waypoint to the agent
+            currentState = cs;
+            _target = dest.position;
+            _agent.SetDestination(_target);
+        }
+    }
+
+    // Overload the function to support very simple state assignment
+    public void SetState(CopState cs)
+    {
+        currentState = cs;
     }
 
     private void UpdateWaypoints(Transform gatePos, int depth)

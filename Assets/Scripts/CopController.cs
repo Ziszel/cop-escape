@@ -10,6 +10,7 @@ public class CopController : MonoBehaviour
 
     private GameObject _playerObj;
     private PlayerController _player;
+    private CopAI _copAi;
 
     private void Start()
     {
@@ -17,6 +18,7 @@ public class CopController : MonoBehaviour
         // find the game object since the PlayerController script is on another game object
         _playerObj = GameObject.Find("Player"); // only one player so this is safe
         _player = _playerObj.GetComponent<PlayerController>();
+        _copAi = GetComponent<CopAI>(); // will get the CopAI component attached to this game object
     }
 
     private void Update()
@@ -53,8 +55,13 @@ public class CopController : MonoBehaviour
  
                 // use the Player tag to determine if the player has been seen
                 if (hit.collider.gameObject.transform.CompareTag("Player") && !_player.GetHiddenValue()) {
-                    //Debug.Log("player seen");
+                    _copAi.SetState(CopState.Chasing);
                     return true;
+                }
+                // transform
+                if (localIsPlayerInView)
+                {
+                    _copAi.SetState(CopState.Patrolling, _player.transform, transform);   
                 }
                 return false;
             }
