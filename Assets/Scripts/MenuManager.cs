@@ -15,9 +15,7 @@ public class MenuManager : MonoBehaviour
     
     private readonly float _logoFadeRate = 0.2f; // Determines the rate at which the logo fades in
     private readonly float _buttonClickFadeRate = 2.5f; // Determines the rate at which the logo fades in
-    private readonly float _scrollSpeed = 20.0f; // Determines how quickly the parallax background scrolls
-    private Vector3 _backgroundImageStartPos; // store the start positions for resetting later
-    private Vector3 _backgroundImage2StartPos;
+    private readonly float _scrollSpeed = 400.0f; // Determines how quickly the parallax background scrolls
     private float _backgroundSize; // Getting the background size allows for easy resetting
 
     private void Start()
@@ -27,16 +25,23 @@ public class MenuManager : MonoBehaviour
         // https://stackoverflow.com/questions/60487667/unity-2d-get-the-x-axis-and-width-of-the-rendered-ui-image-and-not-the-values-o
         // I need the width of the RectTransform NOT the width of the texture
         _backgroundSize = backgroundImage.transform.GetComponent<RectTransform>().rect.width;
-        _backgroundImageStartPos = backgroundImage.transform.position;
-        _backgroundImage2StartPos = backgroundImage2.transform.position;
     }
 
     private void Update()
     {
+        // Move the backgrounds and loop
         ParallaxScroll();
+        // Reset the backgrounds if they move too far to continue the scrolling effect
         if (backgroundImage.transform.position.x < -(_backgroundSize - 200))
         {
-            ResetBackgroundPosition();
+            // set bg 1 to the end of bg 2
+            backgroundImage.transform.position = new Vector3(backgroundImage2.transform.position.x + (_backgroundSize - 250), backgroundImage.transform.position.y, 0.0f);
+        }
+
+        if (backgroundImage2.transform.position.x < -(_backgroundSize - 200))
+        {
+            // set bg 2 to the end of bg 1
+            backgroundImage2.transform.position = new Vector3(backgroundImage.transform.position.x + (_backgroundSize - 250), backgroundImage2.transform.position.y, 0.0f);
         }
     }
 
@@ -54,13 +59,7 @@ public class MenuManager : MonoBehaviour
             backgroundImage2.transform.position.y,
             backgroundImage2.transform.position.z);
     }
-
-    private void ResetBackgroundPosition()
-    {
-        backgroundImage.transform.position = _backgroundImageStartPos;
-        backgroundImage2.transform.position = _backgroundImage2StartPos;
-    }
-
+    
     private void BeginClicked()
     {
         // Once shorter audio track is sourced this will be re-enabled
