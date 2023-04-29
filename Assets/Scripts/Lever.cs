@@ -4,7 +4,7 @@ using UnityEngine;
 public class Lever : MonoBehaviour
 {
     [Header("Linked Gate")]
-    public Transform gatePosition; // one lever to one gate in a scene with multiple gates makes this safe
+    public Transform gatePosition; // one lever to one gate ratio in a scene with multiple gates makes this safe
 
     [Header("Lever parameters")]
     [SerializeField] private float distanceTolerance;
@@ -12,13 +12,13 @@ public class Lever : MonoBehaviour
     [SerializeField] private Vector3 rotationVector;
 
     private GameObject _playerObj;
-    private Transform _playerPosition; // there is only ever one player so GetComponent is better for this variable
+    private Transform _playerPosition;
     private Transform _handle;
     private bool _handlePressed;
     private CopAI _nearestCop;
     private LevelManager _lm;
     private AudioSource _leverSfx;
-    private int _playCount;
+    private int _playCount; // counts how many times a SFX has played to stop multiple plays
 
 
     private void Start()
@@ -30,6 +30,7 @@ public class Lever : MonoBehaviour
         // https://docs.unity3d.com/ScriptReference/Transform.Find.html
         _handle = transform.Find("Handle"); // Find child by name | FindChild() deprecated
         _handlePressed = false;
+        // Get the LevelManager COMPONENT from the LevelManager OBJECT
         _lm = GameObject.Find("LevelManager").GetComponent<LevelManager>();
     }
     
@@ -72,6 +73,7 @@ public class Lever : MonoBehaviour
         _handlePressed = true;
     }
 
+    // Move the gate attached to this lever by the duration passed into this method
     private IEnumerator MoveGate(float duration)
     {
         Vector3 currentPosition = gatePosition.transform.position;

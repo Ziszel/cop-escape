@@ -4,9 +4,9 @@ public class CopController : MonoBehaviour
 {
     public bool localIsPlayerInView;
     
-    [SerializeField] private float closeDistanceRange; // The range at which the 
-    [SerializeField] private float rayRange;
-    [SerializeField] private float fieldOfViewAngle;
+    [SerializeField] private float closeDistanceRange; // The range at which the cop can instantly see the player
+    [SerializeField] private float rayRange; // How far the cop can see
+    [SerializeField] private float fieldOfViewAngle; // the radius of the cops vision
 
     private GameObject _playerObj;
     private PlayerController _player;

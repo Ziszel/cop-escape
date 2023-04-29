@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class MenuManager : MonoBehaviour
 {
+    // All the UI elements + sound that need to be accessed by this manager
     public Button beginBtn;
     public Image logoImage;
     public Image backgroundImage;
@@ -15,12 +16,12 @@ public class MenuManager : MonoBehaviour
     
     private readonly float _logoFadeRate = 0.2f; // Determines the rate at which the logo fades in
     private readonly float _buttonClickFadeRate = 2.5f; // Determines the rate at which the logo fades in
-    private readonly float _scrollSpeed = 400.0f; // Determines how quickly the parallax background scrolls
+    private readonly float _scrollSpeed = 20.0f; // Determines how quickly the parallax background scrolls
     private float _backgroundSize; // Getting the background size allows for easy resetting
 
     private void Start()
     {
-        beginBtn.onClick.AddListener(BeginClicked);
+        beginBtn.onClick.AddListener(BeginClicked); // links my method (BeginClicked) to when the beginBtn is clicked
         StartCoroutine(FadeIn(logoImage, _logoFadeRate)); // begin fading in the logo
         // https://stackoverflow.com/questions/60487667/unity-2d-get-the-x-axis-and-width-of-the-rendered-ui-image-and-not-the-values-o
         // I need the width of the RectTransform NOT the width of the texture
@@ -35,16 +36,21 @@ public class MenuManager : MonoBehaviour
         if (backgroundImage.transform.position.x < -(_backgroundSize - 200))
         {
             // set bg 1 to the end of bg 2
-            backgroundImage.transform.position = new Vector3(backgroundImage2.transform.position.x + (_backgroundSize - 250), backgroundImage.transform.position.y, 0.0f);
+            backgroundImage.transform.position = new Vector3(backgroundImage2.transform.position.x + (_backgroundSize - 251), 
+                backgroundImage.transform.position.y, 
+                0.0f);
         }
 
         if (backgroundImage2.transform.position.x < -(_backgroundSize - 200))
         {
             // set bg 2 to the end of bg 1
-            backgroundImage2.transform.position = new Vector3(backgroundImage.transform.position.x + (_backgroundSize - 250), backgroundImage2.transform.position.y, 0.0f);
+            backgroundImage2.transform.position = new Vector3(backgroundImage.transform.position.x + (_backgroundSize - 251), 
+                backgroundImage2.transform.position.y, 
+                0.0f);
         }
     }
 
+    // Moves the background smoothly to the left; takes into account deltaTime
     private void ParallaxScroll()
     {
         // Move background one
@@ -83,7 +89,6 @@ public class MenuManager : MonoBehaviour
         // Since the track is very short this will look more like a sound effect but with no cutting off.
         while (flavour.isPlaying)
         {
-            // In here, an animation could be ran at the same time (perhaps fading to black?)
             yield return null;
         }
 

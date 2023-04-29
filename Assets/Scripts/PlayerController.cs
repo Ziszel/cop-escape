@@ -4,7 +4,7 @@ public class PlayerController : MonoBehaviour
 {
     [Header("Move parameters")]
     [SerializeField] private float speed; // Movement speed
-    [SerializeField] private float rotationSpeed;
+    [SerializeField] private float rotationSpeed; // How fast the player rotates to face the direction of travel
     
     private bool _isHidden; // will track if player is in shadows
     private Rigidbody _rb;
@@ -21,9 +21,11 @@ public class PlayerController : MonoBehaviour
         // Stop the player moving if they are caught
         if (LevelManager.GetGameState() == GameState.MainLoop)
         {
+            // Get the raw input speed which gives consistent movement no matter the pressure used
             float xSpeed = Input.GetAxisRaw("Horizontal");
             float zSpeed = Input.GetAxisRaw("Vertical");
 
+            // If the player is trying to move, handle movement and rotation else do nothing to save computations
             if (xSpeed != 0 || zSpeed != 0)
             {
                 MovePlayer(xSpeed, zSpeed);
@@ -82,6 +84,8 @@ public class PlayerController : MonoBehaviour
     }
 
     // Keep the collision logic for the player IN the player class
+    // If the player enters the glowing smoke, they are now hidden
+    // If the player reaches the end of the game, call EndGame from the LevelManager
     private void OnTriggerEnter(Collider col)
     {
         if (col.CompareTag("SmokeArea"))
@@ -91,10 +95,12 @@ public class PlayerController : MonoBehaviour
         
         if (col.CompareTag("EndTransform"))
         {
+            // PlayerController should not be able to manipulate scenes directly so make the LevelManager do it!
             LevelManager.EndGame();
         }
     }
 
+    // If the player leads the glowing smoke, they are no longer hidden
     private void OnTriggerExit(Collider col)
     {
         if (col.CompareTag("SmokeArea"))

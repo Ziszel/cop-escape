@@ -14,7 +14,7 @@ public enum CopState
     Patrolling = 0, // Standard patrol cycle (could be influenced by recent reports from other cops)
     Investigating = 1, // Has seen something of interest and moving towards it before radioing for backup
     Idle = 2, // Cop is currently doing nothing
-    Chasing = 3
+    Chasing = 3 // Cop is following the player
 }
 
 public class CopAI : MonoBehaviour
@@ -53,6 +53,7 @@ public class CopAI : MonoBehaviour
                 // if the agent is closer than the minimum distance to a waypoint, select a new waypoint and update the target
                 if (Vector3.Distance(transform.position, _target) < minimumDistance)
                 {
+                    // Handle different patrol types here
                     if (randomPatrol)
                     {
                         RandomlySetNextWaypoint();
@@ -61,7 +62,8 @@ public class CopAI : MonoBehaviour
                     {
                         IterativelySetNextWaypoint();
                     }
-
+                    
+                    // Always update the agent after a new target has been set
                     UpdateTargetDestinationToWaypoint();
                 }
             }
@@ -76,12 +78,14 @@ public class CopAI : MonoBehaviour
             }
             else if (currentState == CopState.Chasing)
             {
+                // Set the target / agent to the position of the player
                 _target = _pc.transform.position;
                 _agent.SetDestination(_target);
             }
         }
         else
         {
+            // Stop moving the AI
             currentState = CopState.Idle;
             _agent.SetDestination(transform.position);
         }
@@ -134,6 +138,8 @@ public class CopAI : MonoBehaviour
         nearestCop.UpdateWaypoints(_gatePosition, waypointUpdateDepth);
     }
 
+    // Set the state of a cop, this needs to be different dependant not only on state but reason for state change.
+    // thus I have overloaded it. This version handles levers being pulled, and player going out of view
     public void SetState(CopState cs, Transform dest, Transform gatePos)
     {
         if (cs == CopState.Investigating)
@@ -154,12 +160,14 @@ public class CopAI : MonoBehaviour
         }
     }
 
-    // Overload the function to support very simple state assignment
+    // Overload the function to support very simple state assignment, used for setting to player chase but is
+    // dynamic and supports any state assignment
     public void SetState(CopState cs)
     {
         currentState = cs;
     }
 
+    // Used when a lever has been pulled. Changes this cops patrol waypoints to keep the player challenges and guessing
     private void UpdateWaypoints(Transform gatePos, int depth)
     {
         if (currentState != CopState.Idle)

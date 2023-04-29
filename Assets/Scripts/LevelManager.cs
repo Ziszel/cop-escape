@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+// Use of state to dictate how the game should react
 public enum GameState
 {
     MainLoop,
@@ -15,6 +16,7 @@ public enum GameState
 
 public class LevelManager : MonoBehaviour
 {
+    // UI Elements.
     public Slider playerVisibleSlider;
     public TMP_Text hiddenText;
     public TMP_Text okText;
@@ -100,6 +102,9 @@ public class LevelManager : MonoBehaviour
     }
     
     // TIMER RELATED
+    // each cop has a local variable they can set to check if they can see a player. If this was a global variable here
+    // then it would immediately be set to false if even one cop could not see a player. This variable is set via a 
+    // raycast inside of CopController, and is used here to manipulate the seen bar (slider)
     private bool IsPlayerInViewOfCop()
     {
         foreach (var cop in _copControllerList)
@@ -156,6 +161,7 @@ public class LevelManager : MonoBehaviour
         }
     }
 
+    // Shows or hides the 'HIDDEN' message to the player
     private void ShouldShowHiddenText()
     {
         if (_player.GetHiddenValue())
@@ -170,18 +176,17 @@ public class LevelManager : MonoBehaviour
     
     private static void ShowWinUI()
     {
-        // implement later
+        // There is no win UI due to time constraints. The game will automatically return to the main menu so that it can
+        // be played again in the event that a player completes the game.
         SceneManager.LoadScene("MainMenu");
     }
 
     private void ShowDeathScreen()
     {
-        // Fade the screen black
+        // Fade the screen black and stop the game.
         DisableMainLoopUI();
         deathScreen.gameObject.SetActive(true);
         StartCoroutine(FadeIn(deathScreen));
-        
-        // Draw the fail text & button to restart
     }
 
     // Set all unneeded UI elements to not active. They will re-activated when the scene is reloaded
@@ -212,6 +217,7 @@ public class LevelManager : MonoBehaviour
     // I could make this return a generic type to get any type of component from a game object
     private List<CopController> GetCopControllerFromGameobject()
     {
+        // This function will return a list of all the cops (specifically the controller component), called on Start
         List<CopController> copControllerList = new List<CopController>();
         foreach (var cop in _cops)
         {
@@ -221,6 +227,7 @@ public class LevelManager : MonoBehaviour
         return copControllerList;
     }
     
+    // Called by CopAI and Lever, therefore made globally available inside of the LevelManager to stick to DRY principles
     public CopAI GetNearestCop(Transform localTransform)
     {
         // Find the nearest cop, assign this to _nearestCop
@@ -228,6 +235,8 @@ public class LevelManager : MonoBehaviour
         GameObject closest = null;
         float distance = Mathf.Infinity;
         Vector3 pos = localTransform.position;
+        // Iterate over each cop and set the curDistance to be the smallest value. If difference is lower, make
+        // curDistance == to Distance. This ensures I will find the closest cop to the transform passed into the variable
         foreach (GameObject cop in _cops)
         {
             Vector3 difference = cop.transform.position - pos;
@@ -241,6 +250,8 @@ public class LevelManager : MonoBehaviour
         return closest.GetComponent<CopAI>();
     }
 
+    // Get the closest waypoints to a transform passed in. A Maximum depth can be passed into it as well. This is useful
+    // for setting different guards to have different size of patrol dynamically as the game is running
     public Transform[] GetClosestWayPoints(Transform startPos, int depth)
     {
         // From a point, return all the nearest wayPoints by Vector3 Distance up to a certain depth
@@ -269,6 +280,7 @@ public class LevelManager : MonoBehaviour
         return returnWaypoints.ToArray(); // return the list as an array 
     }
 
+    // Getter for gmState
     public static GameState GetGameState()
     {
         return gmState;
